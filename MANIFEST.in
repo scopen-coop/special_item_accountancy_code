@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include special_item_accountancy_code *.css
+recursive-include special_item_accountancy_code *.csv
+recursive-include special_item_accountancy_code *.html
+recursive-include special_item_accountancy_code *.ico
+recursive-include special_item_accountancy_code *.js
+recursive-include special_item_accountancy_code *.json
+recursive-include special_item_accountancy_code *.md
+recursive-include special_item_accountancy_code *.png
+recursive-include special_item_accountancy_code *.py
+recursive-include special_item_accountancy_code *.svg
+recursive-include special_item_accountancy_code *.txt
+recursive-exclude special_item_accountancy_code *.pyc
