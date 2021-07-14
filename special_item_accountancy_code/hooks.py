@@ -15,20 +15,17 @@ app_license = "AGPL 3.0"
 # ------------------
 
 fixtures = [
-    {
-        "dt": ("Custom Field"),
-        "filters": [["name", "in", (
-                            "Item Default-default_expense_account_cee",
-                            "Item Default-default_expense_account_cee_export",
-                            "Item Default-default_expense_account_exo_france",
-                            "Item Default-default_income_account_cee",
-                            "Item Default-default_income_account_export",
-                            "Item Default-default_income_account_exo_france",
-                            "Customer-categorie_comptable",
-                            )
-                    ]]
-    },
-    ]
+            {
+                "dt": ("Custom Field"),
+                "filters": [["name", "in", (
+                                    "Customer-categorie_comptable_tiers",
+                                    "Supplier-categorie_comptable_tiers",
+                                    "Item-special_item_accountancy_code",
+                                    "Item-special_item_accountancy_code_details",
+                                    )
+                             ]]
+            },
+        ]
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/special_item_accountancy_code/css/special_item_accountancy_code.css"
@@ -45,6 +42,8 @@ fixtures = [
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 doctype_js = {
 	"Customer": ["custom_scripts_js/customer.js"],
+	"Supplier": ["custom_scripts_js/supplier.js"],
+	"Item": ["custom_scripts_js/item.js"],
 	#"Sales Invoice": ["cefpolymeres/custom_scripts/sales_invoice.js"],
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
@@ -106,6 +105,11 @@ doctype_js = {
 # 		"on_trash": "method"
 #	}
 # }
+doc_events = {
+    "Sales Invoice Itemg": {
+        "validate": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account"
+    },
+}
 
 # Scheduled Tasks
 # ---------------

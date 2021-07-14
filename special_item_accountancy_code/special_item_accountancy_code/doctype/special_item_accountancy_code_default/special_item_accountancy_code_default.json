@@ -1,25 +1,24 @@
 {
- "creation": "2021-07-10 15:40:34.588515",
+ "creation": "2021-07-14 17:46:23.712211",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "type_de_categorie_comptable"
+  "default_values"
  ],
  "fields": [
   {
-   "default": "France\nCEE\nExo France\nHors CEE",
-   "description": "Ajouter les types possible (1 par lignes)",
-   "fieldname": "type_de_categorie_comptable",
-   "fieldtype": "Small Text",
-   "label": "type_de_categorie_comptable"
+   "fieldname": "default_values",
+   "fieldtype": "Table",
+   "label": "Valeur par d\u00e9faut",
+   "options": "Categorie comptable Tiers et code comptable Produit"
   }
  ],
  "issingle": 1,
- "modified": "2021-07-10 16:38:38.187817",
+ "modified": "2021-07-14 18:51:01.796508",
  "modified_by": "Administrator",
  "module": "Special Item Accountancy Code",
- "name": "Categorie comptable",
+ "name": "Special Item Accountancy Code Default",
  "owner": "Administrator",
  "permissions": [
   {

@@ -1,0 +1,50 @@
+{
+ "creation": "2021-07-14 16:57:55.121696",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "categorie_comptable_tiers",
+  "compte_de_charges",
+  "compte_de_produits"
+ ],
+ "fields": [
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "compte_de_charges",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Compte de Charges",
+   "options": "Account"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "compte_de_produits",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Compte de Produits",
+   "options": "Account"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "categorie_comptable_tiers",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Categorie comptable tiers",
+   "options": "Categorie comptable Tiers"
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-07-14 18:58:14.924029",
+ "modified_by": "Administrator",
+ "module": "Special Item Accountancy Code",
+ "name": "Categorie comptable Tiers et code comptable Produit",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
