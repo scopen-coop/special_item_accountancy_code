@@ -11,29 +11,45 @@ from erpnext.stock.get_item_details import get_item_details, process_args
 def get_item_details_custom(args, doc=None, for_validate=False, overwrite_warehouse=True):
     out = get_item_details(args, doc, for_validate, overwrite_warehouse)
     args = process_args(args)
-    income_account = get_correct_default_account(args.customer, args.item_code)
-    if income_account is not None:
-        out.income_account = income_account
+    thirdparty = args.customer
+    type_thirdparty = 'Customer'
+    if thirdparty is None:
+        thirdparty = args.supplier
+        type_thirdparty = 'Supplier'
+    account = get_correct_default_account(thirdparty, type_thirdparty, args.item_code)
+    if type_thirdparty == 'Customer' and account is not None:
+        out.income_account = account
+    if type_thirdparty == 'Supplier' and account is not None:
+        out.expense_account = account
     return out
 
-def get_correct_default_account(customer, item_code):
+def get_correct_default_account(thirdparty, type_thirdparty, item_code):
 
-    doc_customer = frappe.get_doc('Customer', customer)
-    categ_compta_thirdparty = doc_customer.categorie_comptable_tiers
+    if thirdparty is not None:
+        doc_thirdparty = frappe.get_doc(type_thirdparty, thirdparty)
+        categ_compta_thirdparty = doc_thirdparty.categorie_comptable_tiers
 
-    doc_item = frappe.get_doc('Item', item_code)
-    if len(doc_item.special_item_accountancy_code_details) != 0:
-        for detail in doc_item.special_item_accountancy_code_details:
-            if detail.categorie_comptable_tiers == categ_compta_thirdparty:
-                return detail.compte_de_produits
+        doc_item = frappe.get_doc('Item', item_code)
+        if len(doc_item.special_item_accountancy_code_details) != 0:
+            for detail in doc_item.special_item_accountancy_code_details:
+                if detail.categorie_comptable_tiers == categ_compta_thirdparty:
+                    if type_thirdparty == 'Customer':
+                        account = detail.compte_de_produits
+                    if type_thirdparty == 'Supplier':
+                        account = detail.compte_de_charges
+                    return account
 
-    else:
-        for thirdparty_setup_categ in frappe.db.get_all(doctype="Categorie comptable Tiers et code comptable Produit",
-                                                    as_list=True,
-                                                    filters={'parent': 'Special Item Accountancy Code Default'}):
-            thirdparty_categ = frappe.get_doc("Categorie comptable Tiers et code comptable Produit",
-                                              thirdparty_setup_categ[0])
-            print(thirdparty_categ.categorie_comptable_tiers)
-            print(categ_compta_thirdparty)
-            if thirdparty_categ.categorie_comptable_tiers == categ_compta_thirdparty:
-                return thirdparty_categ.compte_de_produits
+        else:
+            for thirdparty_setup_categ in frappe.db.get_all(doctype="Categorie comptable Tiers et code comptable Produit",
+                                                        as_list=True,
+                                                        filters={'parent': 'Special Item Accountancy Code Default'}):
+                thirdparty_categ = frappe.get_doc("Categorie comptable Tiers et code comptable Produit",
+                                                  thirdparty_setup_categ[0])
+                print(thirdparty_categ.categorie_comptable_tiers)
+                print(categ_compta_thirdparty)
+                if thirdparty_categ.categorie_comptable_tiers == categ_compta_thirdparty:
+                    if type_thirdparty == 'Customer':
+                        account = thirdparty_categ.compte_de_produits
+                    if type_thirdparty == 'Supplier':
+                        account = thirdparty_categ.compte_de_charges
+                    return account
