@@ -4,7 +4,7 @@ from frappe import _
 def get_data():
 	data = [
 		{
-			"label": _("Accounting Masters"),
+			"label": _("Setup"),
 			"icon": "fa fa-star",
 			"items": [
 				{

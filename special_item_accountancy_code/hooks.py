@@ -44,7 +44,6 @@ doctype_js = {
 	"Customer": ["custom_scripts_js/customer.js"],
 	"Supplier": ["custom_scripts_js/supplier.js"],
 	"Item": ["custom_scripts_js/item.js"],
-	#"Sales Invoice": ["cefpolymeres/custom_scripts/sales_invoice.js"],
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -105,11 +104,11 @@ doctype_js = {
 # 		"on_trash": "method"
 #	}
 # }
-doc_events = {
-    "Sales Invoice Itemg": {
-        "validate": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account"
-    },
-}
+#doc_events = {
+#    "Sales Invoice Item": {
+#        "on_update": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account"
+#    },
+#}
 
 # Scheduled Tasks
 # ---------------
@@ -143,6 +142,9 @@ doc_events = {
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "special_item_accountancy_code.event.get_events"
 # }
+override_whitelisted_methods = {
+	"erpnext.stock.get_item_details.get_item_details": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_item_details_custom"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
