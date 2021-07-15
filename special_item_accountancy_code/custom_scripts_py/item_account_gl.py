@@ -45,8 +45,6 @@ def get_correct_default_account(thirdparty, type_thirdparty, item_code):
                                                         filters={'parent': 'Special Item Accountancy Code Default'}):
                 thirdparty_categ = frappe.get_doc("Categorie comptable Tiers et code comptable Produit",
                                                   thirdparty_setup_categ[0])
-                print(thirdparty_categ.categorie_comptable_tiers)
-                print(categ_compta_thirdparty)
                 if thirdparty_categ.categorie_comptable_tiers == categ_compta_thirdparty:
                     if type_thirdparty == 'Customer':
                         account = thirdparty_categ.compte_de_produits
