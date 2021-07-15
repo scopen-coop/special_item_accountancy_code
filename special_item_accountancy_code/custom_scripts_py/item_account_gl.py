@@ -11,9 +11,9 @@ from erpnext.stock.get_item_details import get_item_details, process_args
 def get_item_details_custom(args, doc=None, for_validate=False, overwrite_warehouse=True):
     out = get_item_details(args, doc, for_validate, overwrite_warehouse)
     args = process_args(args)
-
-    out.income_account = get_correct_default_account(args.customer, args.item_code)
-
+    income_account = get_correct_default_account(args.customer, args.item_code)
+    if income_account is not None:
+        out.income_account = income_account
     return out
 
 def get_correct_default_account(customer, item_code):
