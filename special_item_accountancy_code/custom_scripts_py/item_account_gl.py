@@ -5,12 +5,21 @@
 from __future__ import unicode_literals
 import frappe
 import json
+from six import string_types
 from erpnext.stock.get_item_details import get_item_details, process_args
 
 @frappe.whitelist()
 def get_item_details_custom(args, doc=None, for_validate=False, overwrite_warehouse=True):
+
+    # standard feature
     out = get_item_details(args, doc, for_validate, overwrite_warehouse)
+
+    # PRocess arges and doc to use it as object
     args = process_args(args)
+    if isinstance(doc, string_types):
+        doc = json.loads(doc)
+
+    # by defaut we don't know what we are working on
     type_thirdparty = None
 
     if args.customer is not None:
@@ -20,6 +29,10 @@ def get_item_details_custom(args, doc=None, for_validate=False, overwrite_wareho
     if args.supplier is not None:
         thirdparty = args.supplier
         type_thirdparty = 'Supplier'
+
+    #on Quotation there is no accountancy code
+    if doc and doc.get('doctype') == 'Quotation':
+        type_thirdparty = None
 
     if type_thirdparty is not None:
         account = get_correct_default_account(thirdparty, type_thirdparty, args.item_code)
