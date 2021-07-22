@@ -22,6 +22,8 @@ fixtures = [
                                     "Supplier-categorie_comptable_tiers",
                                     "Item-special_item_accountancy_code",
                                     "Item-special_item_accountancy_code_details",
+                                    "Item Group-special_item_accountancy_code",
+                                    "Item Group-special_item_accountancy_code_details",
                                     )
                              ]]
             },

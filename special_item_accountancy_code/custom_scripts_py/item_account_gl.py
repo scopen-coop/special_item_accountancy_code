@@ -66,6 +66,18 @@ def get_correct_default_account(thirdparty, type_thirdparty, item_code):
                     account = thirdparty_categ.compte_de_charges
                     break
 
+        for item_group_categ in frappe.db.get_all(doctype="Categorie comptable Tiers et code comptable Produit",
+                                                        as_list=True,
+                                                        filters={'parent': doc_item.item_group,'parenttype': 'Item Group'}):
+            thirdparty_categ = frappe.get_doc("Categorie comptable Tiers et code comptable Produit",
+                                              item_group_categ[0])
+            if thirdparty_categ.categorie_comptable_tiers == categ_compta_thirdparty:
+                if type_thirdparty == 'Customer':
+                    account = thirdparty_categ.compte_de_produits
+                if type_thirdparty == 'Supplier':
+                    account = thirdparty_categ.compte_de_charges
+                    break
+
         if len(doc_item.special_item_accountancy_code_details) != 0:
             for detail in doc_item.special_item_accountancy_code_details:
                 if detail.categorie_comptable_tiers == categ_compta_thirdparty:
