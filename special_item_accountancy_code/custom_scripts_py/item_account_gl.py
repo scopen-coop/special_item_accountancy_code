@@ -8,6 +8,7 @@ import json
 from six import string_types
 from erpnext.stock.get_item_details import get_item_details, process_args
 from frappe.model.mapper import make_mapped_doc
+from frappe.handler import _ 
 
 
 @frappe.whitelist()
@@ -95,10 +96,16 @@ def make_mapped_doc_custom(method, source_name, selected_children=None, args=Non
     out = make_mapped_doc(method, source_name, selected_children, args)
 
     if method == 'erpnext.selling.doctype.sales_order.sales_order.make_sales_invoice':
-        for itm in out.items:
-            itm.income_account = get_correct_default_account(out.customer, 'Customer', itm.item_code)
+        customer=frappe.get_doc('Customer', out.customer)
+        if (customer.categorie_comptable_tiers is None) or (customer.categorie_comptable_tiers == ""):
+            frappe.throw(_('Cutomer accountancy category is missing'))
+            for itm in out.items:
+                itm.income_account = get_correct_default_account(out.customer, 'Customer', itm.item_code)
 
     if method == 'erpnext.buying.doctype.purchase_order.purchase_order.make_purchase_invoice':
+        supplier = frappe.get_doc('Supplier', out.supplier)
+        if (supplier.categorie_comptable_tiers is None) or (supplier.categorie_comptable_tiers == ""):
+            frappe.throw(_('Cutomer accountancy category is missing'))
         for itm in out.items:
             itm.expense_account = get_correct_default_account(out.supplier, 'Supplier', itm.item_code)
 
