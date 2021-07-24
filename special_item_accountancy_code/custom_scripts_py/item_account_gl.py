@@ -8,7 +8,7 @@ import json
 from six import string_types
 from erpnext.stock.get_item_details import get_item_details, process_args
 from frappe.model.mapper import make_mapped_doc
-from frappe.handler import _ 
+from frappe import _ 
 
 
 @frappe.whitelist()
