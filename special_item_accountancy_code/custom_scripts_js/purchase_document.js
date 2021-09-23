@@ -44,7 +44,7 @@ const TaxesAndTotalsExtend = erpnext.taxes_and_totals.extend({
 		}
 	},
 });
-console.log(cur_frm);
+
 // this tell current form to use this override script
 /*$.extend(
 	cur_frm.cscript,
