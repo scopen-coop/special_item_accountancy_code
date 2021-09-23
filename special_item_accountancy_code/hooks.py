@@ -24,6 +24,7 @@ fixtures = [
                                     "Item-special_item_accountancy_code_details",
                                     "Item Group-special_item_accountancy_code",
                                     "Item Group-special_item_accountancy_code_details",
+                                    "Item Tax-transaction_type",
                                     )
                              ]]
             },

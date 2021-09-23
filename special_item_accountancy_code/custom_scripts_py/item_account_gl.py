@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import frappe
 import json
 from six import string_types
-from erpnext.stock.get_item_details import get_item_details, process_args
+from erpnext.stock.get_item_details import get_item_details, process_args, sales_doctypes, purchase_doctypes
 from frappe.model.mapper import make_mapped_doc
 from frappe import _ 
 
@@ -21,6 +21,18 @@ def get_item_details_custom(args, doc=None, for_validate=False, overwrite_wareho
     args = process_args(args)
     if isinstance(doc, string_types):
         doc = json.loads(doc)
+
+    # deal with tax code selling or buying
+    if doc:
+        if doc.get('doctype') in purchase_doctypes:
+            transaction_type = 'Achat'
+        if doc.get('doctype') in sales_doctypes:
+            transaction_type = 'Vente'
+        tax_info = get_correct_tax_account(transaction_type, args.item_code)
+        if tax_info is not None:
+            out.item_tax_template = tax_info.get('name')
+            out.item_tax_rate = json.dumps(tax_info.get('detail'))
+
 
     # by defaut we don't know what we are working on
     type_thirdparty = None
@@ -89,6 +101,20 @@ def get_correct_default_account(thirdparty, type_thirdparty, item_code):
                     break
 
         return account
+
+
+def get_correct_tax_account(transaction_type, item_code):
+
+    if item_code is not None and transaction_type is not None:
+        tax_infos = frappe.get_list("Item Tax",
+                                    filters={'parent': item_code, 'transaction_type': transaction_type},
+                                    fields=['item_tax_template'])
+        if len(tax_infos) != 0:
+            tax_info = frappe.get_doc('Item Tax Template', tax_infos[0].item_tax_template)
+            if len(tax_info.taxes) != 0:
+                tax_info_detail = frappe.get_doc('Item Tax Template Detail', tax_info.taxes[0].name)
+                return {'name': tax_info.title, 'detail': {tax_info_detail.tax_type: tax_info_detail.tax_rate}}
+
 
 @frappe.whitelist()
 def make_mapped_doc_custom(method, source_name, selected_children=None, args=None):
