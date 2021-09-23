@@ -34,7 +34,7 @@ def get_item_details_custom(args, doc=None, for_validate=False, overwrite_wareho
             type_thirdparty = 'Customer'
 
         if transaction_type is not None:
-            tax_info = get_correct_tax_account(transaction_type, args.item_code)
+            tax_info = get_correct_tax_account(transaction_type, args.item_code, doc.get('tax_category'))
             if tax_info is not None:
                 out.item_tax_template = tax_info.get('name')
                 out.item_tax_rate = json.dumps(tax_info.get('detail'))
@@ -104,11 +104,12 @@ def get_correct_default_account(thirdparty, type_thirdparty, item_code):
         return account
 
 
-def get_correct_tax_account(transaction_type, item_code):
+def get_correct_tax_account(transaction_type, item_code, tax_category):
 
     if item_code is not None and transaction_type is not None:
         tax_infos = frappe.get_list("Item Tax",
-                                    filters={'parent': item_code, 'transaction_type': transaction_type},
+                                    filters={'parent': item_code, 'transaction_type': transaction_type,
+                                             'tax_category': tax_category},
                                     fields=['item_tax_template'])
         if len(tax_infos) != 0:
             tax_info = frappe.get_doc('Item Tax Template', tax_infos[0].item_tax_template)
@@ -139,7 +140,7 @@ def make_mapped_doc_custom(method, source_name, selected_children=None, args=Non
     return out
 
 @frappe.whitelist()
-def get_item_tax_info_custom(company, doctype, tax_category, item_codes):
+def get_item_tax_info_custom(company, tax_category, item_codes, doctype):
 
     taxe_infos = get_item_tax_info(company, tax_category, item_codes)
 
@@ -151,10 +152,12 @@ def get_item_tax_info_custom(company, doctype, tax_category, item_codes):
         transaction_type = 'Vente'
 
     if len(taxe_infos) != 0 and transaction_type is not None:
-        for item_code, data in taxe_infos:
+        for item_code in taxe_infos:
+            print('again')
+            print(taxe_infos[item_code])
             tax_info = get_correct_tax_account(transaction_type, item_code)
-            taxe_infos[item_code]["item_tax_rate"] = {'item_tax_template': tax_info.get('name'),
-                                                      'item_tax_rate': json.dumps(tax_info.get('detail'))}
+            #taxe_infos[item_code]["item_tax_rate"] = {'item_tax_template': tax_info.get('name'),
+            #                                         'item_tax_rate': json.dumps(tax_info.get('detail'))}
 
 
     return taxe_infos
