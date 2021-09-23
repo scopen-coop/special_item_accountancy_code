@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 import frappe
 import json
 from six import string_types
-from erpnext.stock.get_item_details import get_item_details, process_args, sales_doctypes, purchase_doctypes
+from erpnext.stock.get_item_details import get_item_details, process_args, sales_doctypes, purchase_doctypes, get_item_tax_info
 from frappe.model.mapper import make_mapped_doc
 from frappe import _ 
 
@@ -23,27 +23,28 @@ def get_item_details_custom(args, doc=None, for_validate=False, overwrite_wareho
         doc = json.loads(doc)
 
     # deal with tax code selling or buying
+    transaction_type = None
+    type_thirdparty = None
     if doc:
         if doc.get('doctype') in purchase_doctypes:
             transaction_type = 'Achat'
+            type_thirdparty = 'Supplier'
         if doc.get('doctype') in sales_doctypes:
             transaction_type = 'Vente'
-        tax_info = get_correct_tax_account(transaction_type, args.item_code)
-        if tax_info is not None:
-            out.item_tax_template = tax_info.get('name')
-            out.item_tax_rate = json.dumps(tax_info.get('detail'))
+            type_thirdparty = 'Customer'
 
+        if transaction_type is not None:
+            tax_info = get_correct_tax_account(transaction_type, args.item_code)
+            if tax_info is not None:
+                out.item_tax_template = tax_info.get('name')
+                out.item_tax_rate = json.dumps(tax_info.get('detail'))
 
     # by defaut we don't know what we are working on
-    type_thirdparty = None
-
     if args.customer is not None:
         thirdparty = args.customer
-        type_thirdparty = 'Customer'
 
     if args.supplier is not None:
         thirdparty = args.supplier
-        type_thirdparty = 'Supplier'
 
     #on Quotation there is no accountancy code
     if doc and doc.get('doctype') == 'Quotation':
@@ -136,3 +137,24 @@ def make_mapped_doc_custom(method, source_name, selected_children=None, args=Non
             itm.expense_account = get_correct_default_account(out.supplier, 'Supplier', itm.item_code)
 
     return out
+
+@frappe.whitelist()
+def get_item_tax_info_custom(company, doctype, tax_category, item_codes):
+
+    taxe_infos = get_item_tax_info(company, tax_category, item_codes)
+
+    transaction_type = None
+
+    if doctype in purchase_doctypes:
+        transaction_type = 'Achat'
+    if doctype in sales_doctypes:
+        transaction_type = 'Vente'
+
+    if len(taxe_infos) != 0 and transaction_type is not None:
+        for item_code, data in taxe_infos:
+            tax_info = get_correct_tax_account(transaction_type, item_code)
+            taxe_infos[item_code]["item_tax_rate"] = {'item_tax_template': tax_info.get('name'),
+                                                      'item_tax_rate': json.dumps(tax_info.get('detail'))}
+
+
+    return taxe_infos

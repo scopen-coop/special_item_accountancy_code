@@ -47,6 +47,8 @@ doctype_js = {
 	"Customer": ["custom_scripts_js/customer.js"],
 	"Supplier": ["custom_scripts_js/supplier.js"],
 	"Item": ["custom_scripts_js/item.js"],
+	#"Purchase Order": ["custom_scripts_js/purchase_document.js"],
+	#"Purchase Invoice": ["custom_scripts_js/purchase_document.js"],
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
