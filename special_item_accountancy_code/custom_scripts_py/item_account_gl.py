@@ -16,7 +16,6 @@ from six import string_types
 
 @frappe.whitelist()
 def get_item_details_custom(args, doc=None, for_validate=False, overwrite_warehouse=True):
-
     # standard feature
     out = get_item_details(args, doc, for_validate, overwrite_warehouse)
 
@@ -43,22 +42,22 @@ def get_item_details_custom(args, doc=None, for_validate=False, overwrite_wareho
     if args.supplier is not None:
         thirdparty = args.supplier
 
-    #on Quotation there is no accountancy code
+    # on Quotation there is no accountancy code
     if doc and doc.get('doctype') == 'Quotation':
         type_thirdparty = None
 
     if type_thirdparty is not None:
         account = get_correct_default_account(thirdparty, type_thirdparty, args.item_code)
+        print(account)
         if transaction_type == 'Vente' and account is not None:
             out.income_account = account
-        if transaction_type == 'achat' and account is not None:
+        if transaction_type == 'Achat' and account is not None:
             out.expense_account = account
 
     return out
 
 
 def get_correct_default_account(thirdparty, type_thirdparty, item_code):
-
     if thirdparty is not None:
         doc_thirdparty = frappe.get_doc(type_thirdparty, thirdparty)
         categ_compta_thirdparty = doc_thirdparty.categorie_comptable_tiers
@@ -78,8 +77,8 @@ def get_correct_default_account(thirdparty, type_thirdparty, item_code):
                     break
 
         for item_group_categ in frappe.db.get_all(doctype="Categorie comptable Tiers et code comptable Produit",
-                                                        as_list=True,
-                                                        filters={'parent': doc_item.item_group,'parenttype': 'Item Group'}):
+                                                  as_list=True,
+                                                  filters={'parent': doc_item.item_group, 'parenttype': 'Item Group'}):
             thirdparty_categ = frappe.get_doc("Categorie comptable Tiers et code comptable Produit",
                                               item_group_categ[0])
             if thirdparty_categ.categorie_comptable_tiers == categ_compta_thirdparty:
@@ -103,7 +102,6 @@ def get_correct_default_account(thirdparty, type_thirdparty, item_code):
 
 @frappe.whitelist()
 def make_mapped_doc_custom(method, source_name, selected_children=None, args=None):
-
     out = make_mapped_doc(method, source_name, selected_children, args)
 
     if method == 'erpnext.selling.doctype.sales_order.sales_order.make_sales_invoice':
