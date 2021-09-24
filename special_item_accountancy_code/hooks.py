@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from . import __version__ as app_version
 
 app_name = "special_item_accountancy_code"
 app_title = "Special Item Accountancy Code"
@@ -23,8 +22,7 @@ fixtures = [
                                     "Item-special_item_accountancy_code",
                                     "Item-special_item_accountancy_code_details",
                                     "Item Group-special_item_accountancy_code",
-                                    "Item Group-special_item_accountancy_code_details",
-                                    "Item Tax-transaction_type",
+                                    "Item Group-special_item_accountancy_code_details"
                                     )
                              ]]
             },
@@ -47,8 +45,6 @@ doctype_js = {
 	"Customer": ["custom_scripts_js/customer.js"],
 	"Supplier": ["custom_scripts_js/supplier.js"],
 	"Item": ["custom_scripts_js/item.js"],
-	#"Purchase Order": ["custom_scripts_js/purchase_document.js"],
-	#"Purchase Invoice": ["custom_scripts_js/purchase_document.js"],
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}

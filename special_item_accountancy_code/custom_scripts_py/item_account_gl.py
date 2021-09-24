@@ -3,12 +3,15 @@
 # For license information, please see license.txt
 
 from __future__ import unicode_literals
-import frappe
+
 import json
-from six import string_types
-from erpnext.stock.get_item_details import get_item_details, process_args, sales_doctypes, purchase_doctypes, get_item_tax_info
+
+import frappe
+from erpnext.stock.get_item_details import (get_item_details, process_args,
+                                            purchase_doctypes, sales_doctypes)
+from frappe import _
 from frappe.model.mapper import make_mapped_doc
-from frappe import _ 
+from six import string_types
 
 
 @frappe.whitelist()
@@ -33,12 +36,6 @@ def get_item_details_custom(args, doc=None, for_validate=False, overwrite_wareho
             transaction_type = 'Vente'
             type_thirdparty = 'Customer'
 
-        if transaction_type is not None:
-            tax_info = get_correct_tax_account(transaction_type, args.item_code, doc.get('tax_category'))
-            if tax_info is not None:
-                out.item_tax_template = tax_info.get('name')
-                out.item_tax_rate = json.dumps(tax_info.get('detail'))
-
     # by defaut we don't know what we are working on
     if args.customer is not None:
         thirdparty = args.customer
@@ -52,9 +49,9 @@ def get_item_details_custom(args, doc=None, for_validate=False, overwrite_wareho
 
     if type_thirdparty is not None:
         account = get_correct_default_account(thirdparty, type_thirdparty, args.item_code)
-        if type_thirdparty == 'Customer' and account is not None:
+        if transaction_type == 'Vente' and account is not None:
             out.income_account = account
-        if type_thirdparty == 'Supplier' and account is not None:
+        if transaction_type == 'achat' and account is not None:
             out.expense_account = account
 
     return out
@@ -104,27 +101,13 @@ def get_correct_default_account(thirdparty, type_thirdparty, item_code):
         return account
 
 
-def get_correct_tax_account(transaction_type, item_code, tax_category):
-
-    if item_code is not None and transaction_type is not None:
-        tax_infos = frappe.get_list("Item Tax",
-                                    filters={'parent': item_code, 'transaction_type': transaction_type,
-                                             'tax_category': tax_category},
-                                    fields=['item_tax_template'])
-        if len(tax_infos) != 0:
-            tax_info = frappe.get_doc('Item Tax Template', tax_infos[0].item_tax_template)
-            if len(tax_info.taxes) != 0:
-                tax_info_detail = frappe.get_doc('Item Tax Template Detail', tax_info.taxes[0].name)
-                return {'name': tax_info.title, 'detail': {tax_info_detail.tax_type: tax_info_detail.tax_rate}}
-
-
 @frappe.whitelist()
 def make_mapped_doc_custom(method, source_name, selected_children=None, args=None):
 
     out = make_mapped_doc(method, source_name, selected_children, args)
 
     if method == 'erpnext.selling.doctype.sales_order.sales_order.make_sales_invoice':
-        customer=frappe.get_doc('Customer', out.customer)
+        customer = frappe.get_doc('Customer', out.customer)
         if (customer.categorie_comptable_tiers is None) or (customer.categorie_comptable_tiers == ""):
             frappe.throw(_('Cutomer accountancy category is missing'))
             for itm in out.items:
@@ -138,26 +121,3 @@ def make_mapped_doc_custom(method, source_name, selected_children=None, args=Non
             itm.expense_account = get_correct_default_account(out.supplier, 'Supplier', itm.item_code)
 
     return out
-
-@frappe.whitelist()
-def get_item_tax_info_custom(company, tax_category, item_codes, doctype):
-
-    taxe_infos = get_item_tax_info(company, tax_category, item_codes)
-
-    transaction_type = None
-
-    if doctype in purchase_doctypes:
-        transaction_type = 'Achat'
-    if doctype in sales_doctypes:
-        transaction_type = 'Vente'
-
-    if len(taxe_infos) != 0 and transaction_type is not None:
-        for item_code in taxe_infos:
-            print('again')
-            print(taxe_infos[item_code])
-            tax_info = get_correct_tax_account(transaction_type, item_code)
-            #taxe_infos[item_code]["item_tax_rate"] = {'item_tax_template': tax_info.get('name'),
-            #                                         'item_tax_rate': json.dumps(tax_info.get('detail'))}
-
-
-    return taxe_infos
