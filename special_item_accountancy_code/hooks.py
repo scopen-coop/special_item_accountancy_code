@@ -14,19 +14,19 @@ app_license = "AGPL 3.0"
 # ------------------
 
 fixtures = [
-            {
-                "dt": ("Custom Field"),
-                "filters": [["name", "in", (
-                                    "Customer-categorie_comptable_tiers",
-                                    "Supplier-categorie_comptable_tiers",
-                                    "Item-special_item_accountancy_code",
-                                    "Item-special_item_accountancy_code_details",
-                                    "Item Group-special_item_accountancy_code",
-                                    "Item Group-special_item_accountancy_code_details"
-                                    )
-                             ]]
-            },
-        ]
+    {
+        "dt": ("Custom Field"),
+        "filters": [["name", "in", (
+            "Customer-categorie_comptable_tiers",
+            "Supplier-categorie_comptable_tiers",
+            "Item-special_item_accountancy_code",
+            "Item-special_item_accountancy_code_details",
+            "Item Group-special_item_accountancy_code",
+            "Item Group-special_item_accountancy_code_details"
+        )
+                     ]]
+    },
+]
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/special_item_accountancy_code/css/special_item_accountancy_code.css"
@@ -42,9 +42,9 @@ fixtures = [
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 doctype_js = {
-	"Customer": ["custom_scripts_js/customer.js"],
-	"Supplier": ["custom_scripts_js/supplier.js"],
-	"Item": ["custom_scripts_js/item.js"],
+    "Customer": ["custom_scripts_js/customer.js"],
+    "Supplier": ["custom_scripts_js/supplier.js"],
+    "Item": ["custom_scripts_js/item.js"],
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -105,11 +105,11 @@ doctype_js = {
 # 		"on_trash": "method"
 #	}
 # }
-#doc_events = {
+# doc_events = {
 #    "Sales Invoice Item": {
 #        "on_update": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account"
 #    },
-#}
+# }
 
 # Scheduled Tasks
 # ---------------
@@ -144,8 +144,8 @@ doctype_js = {
 # 	"frappe.desk.doctype.event.event.get_events": "special_item_accountancy_code.event.get_events"
 # }
 override_whitelisted_methods = {
-	"erpnext.stock.get_item_details.get_item_details": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_item_details_custom",
-	"frappe.model.mapper.make_mapped_doc": "special_item_accountancy_code.custom_scripts_py.item_account_gl.make_mapped_doc_custom"
+    "erpnext.stock.get_item_details.get_item_details": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_item_details_custom",
+    "frappe.model.mapper.make_mapped_doc": "special_item_accountancy_code.custom_scripts_py.item_account_gl.make_mapped_doc_custom",
 }
 #
 # each overriding function accepts a `data` argument;
