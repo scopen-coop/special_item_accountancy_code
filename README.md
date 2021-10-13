@@ -5,10 +5,14 @@ bench install-app special_item_accountancy_code
 bench migrate
 
 FR
+
 Change les codes comptables dans les facture de vente ou d'achat articles en fonction du parametrage client et Code comptable produit spécifiques
 
 EN
-Change accountancy item code into Sales Invoices or Supplier Invoice according customer or supplier attribute
+
+Change accountancy item code into Sales Invoices or Supplier Invoice according customer or supplier attribute and setting on Global, Group Item, or by items
+
+
 
 ![image](https://user-images.githubusercontent.com/1050053/137130902-828a42e0-7d77-4d8e-b0c3-c6193bb04201.png)
 
