@@ -111,7 +111,9 @@ def make_mapped_doc_custom(method, source_name, selected_children=None, args=Non
         for itm in out.items:
             itm.income_account = get_correct_default_account(out.customer, 'Customer', itm.item_code)
 
-    if method == 'erpnext.buying.doctype.purchase_order.purchase_order.make_purchase_invoice':
+    method_buying = {'erpnext.buying.doctype.purchase_order.purchase_order.make_purchase_invoice',
+                     'erpnext.stock.doctype.purchase_receipt.purchase_receipt.make_purchase_invoice'}
+    if method in method_buying:
         supplier = frappe.get_doc('Supplier', out.supplier)
         if (supplier.categorie_comptable_tiers is None) or (supplier.categorie_comptable_tiers == ""):
             frappe.throw(_('Cutomer accountancy category is missing'))
