@@ -4,7 +4,17 @@ bench get-app git@github.com:scopen-coop/special_item_accountancy_code.git
 bench install-app special_item_accountancy_code
 bench migrate
 
-Change les codes comptables articles en fonction du parametrage client et Code comptable produit spécifiques
+FR
+
+Change les codes comptables dans les facture de vente ou d'achat articles en fonction du parametrage client et Code comptable produit spécifiques
+
+EN
+
+Change accountancy item code into Sales Invoices or Supplier Invoice according customer or supplier attribute and setting on Global, Group Item, or by items
+
+
+
+![image](https://user-images.githubusercontent.com/1050053/137130902-828a42e0-7d77-4d8e-b0c3-c6193bb04201.png)
 
 ![image](https://user-images.githubusercontent.com/1050053/134158872-35ed2ee8-981f-4f44-820b-30fd75e14bd1.png)
 
