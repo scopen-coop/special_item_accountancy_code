@@ -1,0 +1,52 @@
+{
+    "category": "Modules",
+    "charts": [],
+    "creation": "2020-07-31 10:38:54.021237",
+    "developer_mode_only": 0,
+    "disable_user_customization": 0,
+    "docstatus": 0,
+    "doctype": "Workspace",
+    "extends": "Settings",
+    "extends_another_page": 1,
+    "hide_custom": 0,
+    "idx": 0,
+    "is_standard": 1,
+    "label": "Special Item Accountancy Code Settings",
+    "links": [
+        {
+            "hidden": 0,
+            "is_query_report": 0,
+            "label": "Special Item Accountancy Code",
+            "onboard": 0,
+            "type": "Card Break"
+        },
+        {
+            "dependencies": "",
+            "hidden": 0,
+            "is_query_report": 0,
+            "label": "Categorie comptable Tiers",
+            "link_to": "Categorie comptable Tiers",
+            "link_type": "DocType",
+            "onboard": 0,
+            "type": "Link"
+        },
+        {
+            "dependencies": "",
+            "hidden": 0,
+            "is_query_report": 0,
+            "label": "Special Item Accountancy Code Default",
+            "link_to": "Special Item Accountancy Code Default",
+            "link_type": "DocType",
+            "onboard": 0,
+            "type": "Link"
+        }
+    ],
+    "modified": "2020-12-01 13:38:34.732552",
+    "modified_by": "Administrator",
+    "module": "Special Item Accountancy Code",
+    "name": "Special Item Accountancy Code",
+    "owner": "Administrator",
+    "pin_to_bottom": 0,
+    "pin_to_top": 0,
+    "shortcuts": []
+}
