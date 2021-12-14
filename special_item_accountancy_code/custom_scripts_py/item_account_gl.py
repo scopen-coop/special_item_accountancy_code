@@ -18,7 +18,7 @@ from six import string_types
 def get_item_details_custom(args, doc=None, for_validate=False, overwrite_warehouse=True):
     # standard feature
     out = get_item_details(args, doc, for_validate, overwrite_warehouse)
-
+    print('toto')
     # PRocess arges and doc to use it as object
     args = process_args(args)
     if isinstance(doc, string_types):
@@ -48,7 +48,6 @@ def get_item_details_custom(args, doc=None, for_validate=False, overwrite_wareho
 
     if type_thirdparty is not None:
         account = get_correct_default_account(thirdparty, type_thirdparty, args.item_code)
-        print(account)
         if transaction_type == 'Vente' and account is not None:
             out.income_account = account
         if transaction_type == 'Achat' and account is not None:
@@ -104,7 +103,9 @@ def get_correct_default_account(thirdparty, type_thirdparty, item_code):
 def make_mapped_doc_custom(method, source_name, selected_children=None, args=None):
     out = make_mapped_doc(method, source_name, selected_children, args)
 
-    if method == 'erpnext.selling.doctype.sales_order.sales_order.make_sales_invoice':
+    method_selling = {'erpnext.selling.doctype.sales_order.sales_order.make_sales_invoice',
+                      'erpnext.stock.doctype.delivery_note.delivery_note.make_sales_invoice'}
+    if method in method_selling:
         customer = frappe.get_doc('Customer', out.customer)
         if (customer.categorie_comptable_tiers is None) or (customer.categorie_comptable_tiers == ""):
             frappe.throw(_('Cutomer accountancy category is missing'))
