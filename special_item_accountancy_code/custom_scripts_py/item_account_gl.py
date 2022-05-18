@@ -10,7 +10,6 @@ import frappe
 from erpnext.stock.get_item_details import (get_item_details, process_args,
                                             purchase_doctypes, sales_doctypes)
 from frappe import _
-from frappe.model.mapper import make_mapped_doc
 from six import string_types
 
 
@@ -18,7 +17,7 @@ from six import string_types
 def get_item_details_custom(args, doc=None, for_validate=False, overwrite_warehouse=True):
     # standard feature
     out = get_item_details(args, doc, for_validate, overwrite_warehouse)
-    print('toto')
+
     # PRocess arges and doc to use it as object
     args = process_args(args)
     if isinstance(doc, string_types):
@@ -100,25 +99,21 @@ def get_correct_default_account(thirdparty, type_thirdparty, item_code):
 
 
 @frappe.whitelist()
-def make_mapped_doc_custom(method, source_name, selected_children=None, args=None):
-    out = make_mapped_doc(method, source_name, selected_children, args)
+def get_correct_default_account_validate(doc, method):
 
-    method_selling = {'erpnext.selling.doctype.sales_order.sales_order.make_sales_invoice',
-                      'erpnext.stock.doctype.delivery_note.delivery_note.make_sales_invoice'}
-    if method in method_selling:
-        customer = frappe.get_doc('Customer', out.customer)
-        if (customer.categorie_comptable_tiers is None) or (customer.categorie_comptable_tiers == ""):
-            frappe.throw(_('Cutomer accountancy category is missing'))
-        for itm in out.items:
-            itm.income_account = get_correct_default_account(out.customer, 'Customer', itm.item_code)
+    if doc:
+        if doc.get('doctype') in purchase_doctypes:
+            supplier = frappe.get_doc('Supplier', doc.supplier)
+            if (supplier.categorie_comptable_tiers is None) or (supplier.categorie_comptable_tiers == ""):
+                frappe.throw(_('Cutomer accountancy category is missing'))
+            for itm in doc.items:
+                itm.expense_account = get_correct_default_account(doc.supplier, 'Supplier', itm.item_code)
 
-    method_buying = {'erpnext.buying.doctype.purchase_order.purchase_order.make_purchase_invoice',
-                     'erpnext.stock.doctype.purchase_receipt.purchase_receipt.make_purchase_invoice'}
-    if method in method_buying:
-        supplier = frappe.get_doc('Supplier', out.supplier)
-        if (supplier.categorie_comptable_tiers is None) or (supplier.categorie_comptable_tiers == ""):
-            frappe.throw(_('Cutomer accountancy category is missing'))
-        for itm in out.items:
-            itm.expense_account = get_correct_default_account(out.supplier, 'Supplier', itm.item_code)
+        if doc.get('doctype') in sales_doctypes:
+            customer = frappe.get_doc('Customer', doc.customer)
+            if (customer.categorie_comptable_tiers is None) or (customer.categorie_comptable_tiers == ""):
+                frappe.throw(_('Cutomer accountancy category is missing'))
+            for itm in doc.items:
+                itm.income_account = get_correct_default_account(doc.customer, 'Customer', itm.item_code)
 
-    return out
+

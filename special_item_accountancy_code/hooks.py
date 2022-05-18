@@ -105,11 +105,14 @@ doctype_js = {
 # 		"on_trash": "method"
 #	}
 # }
-# doc_events = {
-#    "Sales Invoice Item": {
-#        "on_update": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account"
-#    },
-# }
+doc_events = {
+   "Purchase Invoice": {
+       "validate": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account_validate"
+   },
+   "Sales Invoice": {
+        "validate": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account_validate"
+   },
+}
 
 # Scheduled Tasks
 # ---------------
@@ -145,7 +148,7 @@ doctype_js = {
 # }
 override_whitelisted_methods = {
     "erpnext.stock.get_item_details.get_item_details": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_item_details_custom",
-    "frappe.model.mapper.make_mapped_doc": "special_item_accountancy_code.custom_scripts_py.item_account_gl.make_mapped_doc_custom",
+#    "frappe.model.mapper.make_mapped_doc": "special_item_accountancy_code.custom_scripts_py.item_account_gl.make_mapped_doc_custom",
 }
 #
 # each overriding function accepts a `data` argument;
