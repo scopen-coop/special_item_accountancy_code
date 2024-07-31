@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 app_name = "special_item_accountancy_code"
 app_title = "Special Item Accountancy Code"
 app_publisher = "scopen.fr"
@@ -16,15 +13,30 @@ app_license = "AGPL 3.0"
 fixtures = [
     {
         "dt": ("Custom Field"),
-        "filters": [["name", "in", (
-            "Customer-categorie_comptable_tiers",
-            "Supplier-categorie_comptable_tiers",
-            "Item-special_item_accountancy_code",
-            "Item-special_item_accountancy_code_details",
-            "Item Group-special_item_accountancy_code",
-            "Item Group-special_item_accountancy_code_details"
-        )
-                     ]]
+        "filters": [
+            [
+                "name",
+                "in",
+                (
+                    "Customer-categorie_comptable_tiers",
+                    "Supplier-categorie_comptable_tiers",
+                    "Item-special_item_accountancy_code",
+                    "Item-special_item_accountancy_code_details",
+                    "Item Group-special_item_accountancy_code",
+                    "Item Group-special_item_accountancy_code_details",
+                ),
+            ]
+        ],
+    },
+    {
+        "dt": "Workspace Link",
+        "filters": [
+            [
+                "name",
+                "in",
+                ("9vmq0sfhjt", "9vmq2l4spp", "9vmqcklu8l"),
+            ],
+        ],
     },
 ]
 
@@ -58,7 +70,7 @@ doctype_js = {
 
 # website user home page (by Role)
 # role_home_page = {
-#	"Role": "home_page"
+# "Role": "home_page"
 # }
 
 # Website user home page (by function)
@@ -75,6 +87,8 @@ doctype_js = {
 
 # before_install = "special_item_accountancy_code.install.before_install"
 # after_install = "special_item_accountancy_code.install.after_install"
+after_sync = "special_item_accountancy_code.utils.update_workspace.add_cards"
+after_migrate = "special_item_accountancy_code.utils.update_workspace.add_cards"
 
 # Desk Notifications
 # ------------------
@@ -103,15 +117,15 @@ doctype_js = {
 # 		"on_update": "method",
 # 		"on_cancel": "method",
 # 		"on_trash": "method"
-#	}
+# }
 # }
 doc_events = {
-   "Purchase Invoice": {
-       "validate": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account_validate"
-   },
-   "Sales Invoice": {
+    "Purchase Invoice": {
         "validate": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account_validate"
-   },
+    },
+    "Sales Invoice": {
+        "validate": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account_validate"
+    },
 }
 
 # Scheduled Tasks
@@ -148,7 +162,7 @@ doc_events = {
 # }
 override_whitelisted_methods = {
     "erpnext.stock.get_item_details.get_item_details": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_item_details_custom",
-#    "frappe.model.mapper.make_mapped_doc": "special_item_accountancy_code.custom_scripts_py.item_account_gl.make_mapped_doc_custom",
+    #    "frappe.model.mapper.make_mapped_doc": "special_item_accountancy_code.custom_scripts_py.item_account_gl.make_mapped_doc_custom",
 }
 #
 # each overriding function accepts a `data` argument;
