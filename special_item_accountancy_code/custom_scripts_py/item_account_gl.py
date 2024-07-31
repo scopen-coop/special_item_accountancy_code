@@ -7,14 +7,20 @@ from __future__ import unicode_literals
 import json
 
 import frappe
-from erpnext.stock.get_item_details import (get_item_details, process_args,
-                                            purchase_doctypes, sales_doctypes)
+from erpnext.stock.get_item_details import (
+    get_item_details,
+    process_args,
+    purchase_doctypes,
+    sales_doctypes,
+)
 from frappe import _
 from six import string_types
 
 
 @frappe.whitelist()
-def get_item_details_custom(args, doc=None, for_validate=False, overwrite_warehouse=True):
+def get_item_details_custom(
+    args, doc=None, for_validate=False, overwrite_warehouse=True
+):
     # standard feature
     out = get_item_details(args, doc, for_validate, overwrite_warehouse)
 
@@ -27,71 +33,82 @@ def get_item_details_custom(args, doc=None, for_validate=False, overwrite_wareho
     transaction_type = None
     type_thirdparty = None
     if doc:
-        if doc.get('doctype') in purchase_doctypes:
-            transaction_type = 'Achat'
-            type_thirdparty = 'Supplier'
-        if doc.get('doctype') in sales_doctypes:
-            transaction_type = 'Vente'
-            type_thirdparty = 'Customer'
+        if doc.get("doctype") in purchase_doctypes:
+            transaction_type = "Achat"
+            type_thirdparty = "Supplier"
+        if doc.get("doctype") in sales_doctypes:
+            transaction_type = "Vente"
+            type_thirdparty = "Customer"
 
     # by defaut we don't know what we are working on
+    third_party = None
     if args.customer is not None:
-        thirdparty = args.customer
+        third_party = args.customer
 
     if args.supplier is not None:
-        thirdparty = args.supplier
+        third_party = args.supplier
 
     # on Quotation there is no accountancy code
-    if doc and doc.get('doctype') == 'Quotation':
+    if doc and doc.get("doctype") == "Quotation":
         type_thirdparty = None
 
-    if type_thirdparty is not None:
-        account = get_correct_default_account(thirdparty, type_thirdparty, args.item_code)
-        if transaction_type == 'Vente' and account is not None:
+    if type_thirdparty is not None and third_party is not None:
+        account = get_correct_default_account(
+            third_party, type_thirdparty, args.item_code
+        )
+        if transaction_type == "Vente" and account is not None:
             out.income_account = account
-        if transaction_type == 'Achat' and account is not None:
+        if transaction_type == "Achat" and account is not None:
             out.expense_account = account
 
     return out
 
 
-def get_correct_default_account(thirdparty, type_thirdparty, item_code):
-    if thirdparty is not None:
-        doc_thirdparty = frappe.get_doc(type_thirdparty, thirdparty)
+def get_correct_default_account(third_party, type_thirdparty, item_code):
+    if third_party is not None:
+        doc_thirdparty = frappe.get_doc(type_thirdparty, third_party)
         categ_compta_thirdparty = doc_thirdparty.categorie_comptable_tiers
-        doc_item = frappe.get_doc('Item', item_code)
+        doc_item = frappe.get_doc("Item", item_code)
         account = None
 
-        for thirdparty_setup_categ in frappe.db.get_all(doctype="Categorie comptable Tiers et code comptable Produit",
-                                                        as_list=True,
-                                                        filters={'parent': 'Special Item Accountancy Code Default'}):
-            thirdparty_categ = frappe.get_doc("Categorie comptable Tiers et code comptable Produit",
-                                              thirdparty_setup_categ[0])
+        for thirdparty_setup_categ in frappe.db.get_all(
+            doctype="Categorie comptable Tiers et code comptable Produit",
+            as_list=True,
+            filters={"parent": "Special Item Accountancy Code Default"},
+        ):
+            thirdparty_categ = frappe.get_doc(
+                "Categorie comptable Tiers et code comptable Produit",
+                thirdparty_setup_categ[0],
+            )
             if thirdparty_categ.categorie_comptable_tiers == categ_compta_thirdparty:
-                if type_thirdparty == 'Customer':
+                if type_thirdparty == "Customer":
                     account = thirdparty_categ.compte_de_produits
-                if type_thirdparty == 'Supplier':
+                if type_thirdparty == "Supplier":
                     account = thirdparty_categ.compte_de_charges
                     break
 
-        for item_group_categ in frappe.db.get_all(doctype="Categorie comptable Tiers et code comptable Produit",
-                                                  as_list=True,
-                                                  filters={'parent': doc_item.item_group, 'parenttype': 'Item Group'}):
-            thirdparty_categ = frappe.get_doc("Categorie comptable Tiers et code comptable Produit",
-                                              item_group_categ[0])
+        for item_group_categ in frappe.db.get_all(
+            doctype="Categorie comptable Tiers et code comptable Produit",
+            as_list=True,
+            filters={"parent": doc_item.item_group, "parenttype": "Item Group"},
+        ):
+            thirdparty_categ = frappe.get_doc(
+                "Categorie comptable Tiers et code comptable Produit",
+                item_group_categ[0],
+            )
             if thirdparty_categ.categorie_comptable_tiers == categ_compta_thirdparty:
-                if type_thirdparty == 'Customer':
+                if type_thirdparty == "Customer":
                     account = thirdparty_categ.compte_de_produits
-                if type_thirdparty == 'Supplier':
+                if type_thirdparty == "Supplier":
                     account = thirdparty_categ.compte_de_charges
                     break
 
         if len(doc_item.special_item_accountancy_code_details) != 0:
             for detail in doc_item.special_item_accountancy_code_details:
                 if detail.categorie_comptable_tiers == categ_compta_thirdparty:
-                    if type_thirdparty == 'Customer':
+                    if type_thirdparty == "Customer":
                         account = detail.compte_de_produits
-                    if type_thirdparty == 'Supplier':
+                    if type_thirdparty == "Supplier":
                         account = detail.compte_de_charges
                     break
 
@@ -100,20 +117,25 @@ def get_correct_default_account(thirdparty, type_thirdparty, item_code):
 
 @frappe.whitelist()
 def get_correct_default_account_validate(doc, method):
-
     if doc:
-        if doc.get('doctype') in purchase_doctypes:
-            supplier = frappe.get_doc('Supplier', doc.supplier)
-            if (supplier.categorie_comptable_tiers is None) or (supplier.categorie_comptable_tiers == ""):
-                frappe.throw(_('Cutomer accountancy category is missing'))
+        if doc.get("doctype") in purchase_doctypes:
+            supplier = frappe.get_doc("Supplier", doc.supplier)
+            if (supplier.categorie_comptable_tiers is None) or (
+                supplier.categorie_comptable_tiers == ""
+            ):
+                frappe.throw(_("Cutomer accountancy category is missing"))
             for itm in doc.items:
-                itm.expense_account = get_correct_default_account(doc.supplier, 'Supplier', itm.item_code)
+                itm.expense_account = get_correct_default_account(
+                    doc.supplier, "Supplier", itm.item_code
+                )
 
-        if doc.get('doctype') in sales_doctypes:
-            customer = frappe.get_doc('Customer', doc.customer)
-            if (customer.categorie_comptable_tiers is None) or (customer.categorie_comptable_tiers == ""):
-                frappe.throw(_('Cutomer accountancy category is missing'))
+        if doc.get("doctype") in sales_doctypes:
+            customer = frappe.get_doc("Customer", doc.customer)
+            if (customer.categorie_comptable_tiers is None) or (
+                customer.categorie_comptable_tiers == ""
+            ):
+                frappe.throw(_("Cutomer accountancy category is missing"))
             for itm in doc.items:
-                itm.income_account = get_correct_default_account(doc.customer, 'Customer', itm.item_code)
-
-
+                itm.income_account = get_correct_default_account(
+                    doc.customer, "Customer", itm.item_code
+                )
