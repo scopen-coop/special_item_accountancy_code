@@ -34,6 +34,8 @@ def get_item_details_custom(args, doc=None, for_validate=False, overwrite_wareho
             transaction_type = 'Vente'
             type_thirdparty = 'Customer'
 
+    type_thirdparty = None
+
     # by defaut we don't know what we are working on
     if args.customer is not None:
         thirdparty = args.customer
@@ -115,5 +117,3 @@ def get_correct_default_account_validate(doc, method):
                 frappe.throw(_('Cutomer accountancy category is missing'))
             for itm in doc.items:
                 itm.income_account = get_correct_default_account(doc.customer, 'Customer', itm.item_code)
-
-
