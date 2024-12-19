@@ -87,8 +87,7 @@ doctype_js = {
 
 # before_install = "special_item_accountancy_code.install.before_install"
 # after_install = "special_item_accountancy_code.install.after_install"
-after_sync = "special_item_accountancy_code.utils.update_workspace.add_cards"
-after_migrate = "special_item_accountancy_code.utils.update_workspace.add_cards"
+
 
 # Desk Notifications
 # ------------------
