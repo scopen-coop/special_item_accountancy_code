@@ -80,7 +80,7 @@ def get_item_details_account_code(
 def get_correct_default_account(third_party, type_thirdparty, item_code):
     if third_party is not None:
         doc_thirdparty = frappe.get_doc(type_thirdparty, third_party)
-        categ_compta_thirdparty = doc_thirdparty.categorie_comptable_tiers
+        categ_compta_thirdparty = doc_thirdparty.get('categorie_comptable_tiers')
         doc_item = frappe.get_doc("Item", item_code)
         account = None
 
@@ -93,31 +93,31 @@ def get_correct_default_account(third_party, type_thirdparty, item_code):
                 "Categorie comptable Tiers et code comptable Produit",
                 thirdparty_setup_categ[0],
             )
-            if thirdparty_categ.categorie_comptable_tiers == categ_compta_thirdparty:
+            if thirdparty_categ.get('categorie_comptable_tiers') == categ_compta_thirdparty:
                 if type_thirdparty == "Customer":
-                    account = thirdparty_categ.compte_de_produits
+                    account = thirdparty_categ.get('compte_de_produits')
                 if type_thirdparty == "Supplier":
-                    account = thirdparty_categ.compte_de_charges
+                    account = thirdparty_categ.get('compte_de_charges')
                     break
 
         for item_group_categ in frappe.db.get_all(
             doctype="Categorie comptable Tiers et code comptable Produit",
             as_list=True,
-            filters={"parent": doc_item.item_group, "parenttype": "Item Group"},
+            filters={"parent": doc_item.get('item_group'), "parenttype": "Item Group"},
         ):
             thirdparty_categ = frappe.get_doc(
                 "Categorie comptable Tiers et code comptable Produit",
                 item_group_categ[0],
             )
-            if thirdparty_categ.categorie_comptable_tiers == categ_compta_thirdparty:
+            if thirdparty_categ.get('categorie_comptable_tiers') == categ_compta_thirdparty:
                 if type_thirdparty == "Customer":
-                    account = thirdparty_categ.compte_de_produits
+                    account = thirdparty_categ.get('compte_de_produits')
                 if type_thirdparty == "Supplier":
-                    account = thirdparty_categ.compte_de_charges
+                    account = thirdparty_categ.get('compte_de_charges')
                     break
 
-        if len(doc_item.special_item_accountancy_code_details) != 0:
-            for detail in doc_item.special_item_accountancy_code_details:
+        if doc_item.get('special_item_accountancy_code_details') != 0:
+            for detail in doc_item.get('special_item_accountancy_code_details'):
                 if detail.categorie_comptable_tiers == categ_compta_thirdparty:
                     if type_thirdparty == "Customer":
                         account = detail.compte_de_produits
@@ -127,14 +127,16 @@ def get_correct_default_account(third_party, type_thirdparty, item_code):
 
         return account
 
+    return None
+
 
 @frappe.whitelist()
 def get_correct_default_account_validate(doc, method):
     if doc:
         if doc.get("doctype") in purchase_doctypes:
             supplier = frappe.get_doc("Supplier", doc.supplier)
-            if (supplier.categorie_comptable_tiers is None) or (
-                supplier.categorie_comptable_tiers == ""
+            if supplier.get('categorie_comptable_tiers') is None or (
+                supplier.get('categorie_comptable_tiers') == ""
             ):
                 frappe.throw(_("Cutomer accountancy category is missing"))
             for itm in doc.items:
@@ -144,8 +146,8 @@ def get_correct_default_account_validate(doc, method):
 
         if doc.get("doctype") in sales_doctypes:
             customer = frappe.get_doc("Customer", doc.customer)
-            if (customer.categorie_comptable_tiers is None) or (
-                customer.categorie_comptable_tiers == ""
+            if (customer.get('categorie_comptable_tiers') is None) or (
+                customer.get('categorie_comptable_tiers') == ""
             ):
                 frappe.throw(_("Cutomer accountancy category is missing"))
             for itm in doc.items:
