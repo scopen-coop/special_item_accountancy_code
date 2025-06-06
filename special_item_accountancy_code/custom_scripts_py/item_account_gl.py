@@ -13,20 +13,35 @@ from erpnext.stock.get_item_details import (
     purchase_doctypes,
     sales_doctypes,
 )
-from frappe import _
-from six import string_types
-
+from frappe import _,get_hooks
 
 @frappe.whitelist()
-def get_item_details_custom(
+def get_item_details_account_code(
     args, doc=None, for_validate=False, overwrite_warehouse=True
 ):
-    # standard feature
-    out = get_item_details(args, doc, for_validate, overwrite_warehouse)
+    print('in get_item_details_account_code')
+    out = None
+    # find if others apps declare this override_whitelisted_methods
+    # then get result form other hook with this one
+    hooks = get_hooks("override_whitelisted_methods", {}).get('erpnext.stock.get_item_details.get_item_details', [])
+    if hooks:
+        current_method = __name__ + '.' + get_item_details_account_code.__name__
+        current_hook_pos = hooks.index(current_method)
+        if current_hook_pos > 0:
+            method = frappe.get_attr(hooks[current_hook_pos-1])
+            out = method(args, doc, for_validate, overwrite_warehouse)
+        else:
+            # standard feature
+            out = get_item_details(args, doc, for_validate, overwrite_warehouse)
+    else :
+        # standard feature
+        out = get_item_details(args, doc, for_validate, overwrite_warehouse)
 
-    # PRocess arges and doc to use it as object
+    print(repr(out))
+    #return out
+    # Process arges and doc to use it as object
     args = process_args(args)
-    if isinstance(doc, string_types):
+    if isinstance(doc, str):
         doc = json.loads(doc)
 
     # deal with tax code selling or buying

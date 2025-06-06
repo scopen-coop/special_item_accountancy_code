@@ -160,8 +160,7 @@ doc_events = {
 # 	"frappe.desk.doctype.event.event.get_events": "special_item_accountancy_code.event.get_events"
 # }
 override_whitelisted_methods = {
-    "erpnext.stock.get_item_details.get_item_details": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_item_details_custom",
-    #    "frappe.model.mapper.make_mapped_doc": "special_item_accountancy_code.custom_scripts_py.item_account_gl.make_mapped_doc_custom",
+    "erpnext.stock.get_item_details.get_item_details": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_item_details_account_code",
 }
 #
 # each overriding function accepts a `data` argument;
