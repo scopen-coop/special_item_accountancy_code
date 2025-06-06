@@ -19,8 +19,6 @@ from frappe import _,get_hooks
 def get_item_details_account_code(
     args, doc=None, for_validate=False, overwrite_warehouse=True
 ):
-    print('in get_item_details_account_code')
-    out = None
     # find if others apps declare this override_whitelisted_methods
     # then get result form other hook with this one
     hooks = get_hooks("override_whitelisted_methods", {}).get('erpnext.stock.get_item_details.get_item_details', [])
