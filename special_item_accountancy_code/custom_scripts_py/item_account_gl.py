@@ -35,7 +35,6 @@ def get_item_details_account_code(
         # standard feature
         out = get_item_details(args, doc, for_validate, overwrite_warehouse)
 
-    print(repr(out))
     #return out
     # Process arges and doc to use it as object
     args = process_args(args)
