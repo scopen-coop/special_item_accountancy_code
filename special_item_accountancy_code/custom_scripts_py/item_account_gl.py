@@ -24,10 +24,14 @@ def get_item_details_account_code(
     hooks = get_hooks("override_whitelisted_methods", {}).get('erpnext.stock.get_item_details.get_item_details', [])
     if hooks:
         current_method = __name__ + '.' + get_item_details_account_code.__name__
-        current_hook_pos = hooks.index(current_method)
-        if current_hook_pos > 0:
-            method = frappe.get_attr(hooks[current_hook_pos-1])
-            out = method(args, doc, for_validate, overwrite_warehouse)
+        if current_method in hooks:
+            current_hook_pos = hooks.index(current_method)
+            if current_hook_pos > 0:
+                method = frappe.get_attr(hooks[current_hook_pos-1])
+                out = method(args, doc, for_validate, overwrite_warehouse)
+            else:
+                # standard feature
+                out = get_item_details(args, doc, for_validate, overwrite_warehouse)
         else:
             # standard feature
             out = get_item_details(args, doc, for_validate, overwrite_warehouse)
