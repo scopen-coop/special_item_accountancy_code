@@ -143,9 +143,11 @@ def get_correct_default_account_validate(doc, method):
             ):
                 frappe.throw(_("Cutomer accountancy category is missing"))
             for itm in doc.items:
-                itm.expense_account = get_correct_default_account(
+                account=get_correct_default_account(
                     doc.supplier, "Supplier", itm.item_code
                 )
+                if account:
+                    itm.expense_account = account
 
         if doc.get("doctype") in sales_doctypes:
             customer = frappe.get_doc("Customer", doc.customer)
@@ -154,6 +156,8 @@ def get_correct_default_account_validate(doc, method):
             ):
                 frappe.throw(_("Cutomer accountancy category is missing"))
             for itm in doc.items:
-                itm.income_account = get_correct_default_account(
+                account = get_correct_default_account(
                     doc.customer, "Customer", itm.item_code
                 )
+                if account:
+                    itm.income_account = account
