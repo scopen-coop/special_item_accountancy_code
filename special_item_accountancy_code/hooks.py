@@ -9,36 +9,36 @@ app_license = "AGPL 3.0"
 
 # Includes in <head>
 # ------------------
-
-fixtures = [
-    {
-        "dt": ("Custom Field"),
-        "filters": [
-            [
-                "name",
-                "in",
-                (
-                    "Customer-categorie_comptable_tiers",
-                    "Supplier-categorie_comptable_tiers",
-                    "Item-special_item_accountancy_code",
-                    "Item-special_item_accountancy_code_details",
-                    "Item Group-special_item_accountancy_code",
-                    "Item Group-special_item_accountancy_code_details",
-                ),
-            ]
-        ],
-    },
-    {
-        "dt": "Workspace Link",
-        "filters": [
-            [
-                "name",
-                "in",
-                ("9vmq0sfhjt", "9vmq2l4spp", "9vmqcklu8l"),
-            ],
-        ],
-    },
-]
+#
+# fixtures = [
+#     {
+#         "dt": ("Custom Field"),
+#         "filters": [
+#             [
+#                 "name",
+#                 "in",
+#                 (
+#                     "Customer-categorie_comptable_tiers",
+#                     "Supplier-categorie_comptable_tiers",
+#                     "Item-special_item_accountancy_code",
+#                     "Item-special_item_accountancy_code_details",
+#                     "Item Group-special_item_accountancy_code",
+#                     "Item Group-special_item_accountancy_code_details",
+#                 ),
+#             ]
+#         ],
+#     },
+#     {
+#         "dt": "Workspace Link",
+#         "filters": [
+#             [
+#                 "name",
+#                 "in",
+#                 ("9vmq0sfhjt", "9vmq2l4spp", "9vmqcklu8l"),
+#             ],
+#         ],
+#     },
+# ]
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/special_item_accountancy_code/css/special_item_accountancy_code.css"
@@ -53,11 +53,11 @@ fixtures = [
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
-doctype_js = {
-    "Customer": ["custom_scripts_js/customer.js"],
-    "Supplier": ["custom_scripts_js/supplier.js"],
-    "Item": ["custom_scripts_js/item.js"],
-}
+# doctype_js = {
+#     "Customer": ["custom_scripts_js/customer.js"],
+#     "Supplier": ["custom_scripts_js/supplier.js"],
+#     "Item": ["custom_scripts_js/item.js"],
+# }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -118,14 +118,14 @@ doctype_js = {
 # 		"on_trash": "method"
 # }
 # }
-doc_events = {
-    "Purchase Invoice": {
-        "validate": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account_validate"
-    },
-    "Sales Invoice": {
-        "validate": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account_validate"
-    },
-}
+# doc_events = {
+#     "Purchase Invoice": {
+#         "validate": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account_validate"
+#     },
+#     "Sales Invoice": {
+#         "validate": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_correct_default_account_validate"
+#     },
+# }
 
 # Scheduled Tasks
 # ---------------
@@ -159,9 +159,9 @@ doc_events = {
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "special_item_accountancy_code.event.get_events"
 # }
-override_whitelisted_methods = {
-    "erpnext.stock.get_item_details.get_item_details": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_item_details_account_code",
-}
+# override_whitelisted_methods = {
+#     "erpnext.stock.get_item_details.get_item_details": "special_item_accountancy_code.custom_scripts_py.item_account_gl.get_item_details_account_code",
+# }
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
